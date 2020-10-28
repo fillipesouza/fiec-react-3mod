@@ -1,39 +1,48 @@
-import React from 'react';
+import React, { useState, Fragment } from 'react';
 import './App.css';
 import Formulario from './Formulario';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Switch, Route } from 'react-router-dom';
 import CriaRifa from './CriaRifa';
-import { render } from '@testing-library/react';
-import {FirebaseService} from './utils/firebaseUtils';
+import LeRifa from './LeRifa';
 
-class App extends React.Component {
-  state = {
-    data: []
-};
+const App = () => {
+  const [logged, setLogged] = useState(false);
 
-componentDidMount() {
-    FirebaseService.getDataList('leituras', (dataReceived) =>    this.setState({data: dataReceived}))
-}
-  render(){
+  const login = () => {
+    console.log('logged')
+    setLogged(true);
+  }
+
+  const logout = () => {
+    setLogged(false);
+  }
+
+ 
     return (
       <div className="App">
         <Switch>
-          <Route exact path="/">
-            <Formulario />
-          </Route>
-          <Route path="/criarifa">
+        {logged ? 
+        <Fragment> 
+          
+            <Route path="/criarifa">
             <CriaRifa />
           </Route>
-          <Route path="/rifa">
+          
+          <Route exact path="/">
             <div>
-              Rifa
-        </div>
+             <LeRifa />
+          </div>
           </Route>
+          </Fragment>
+          : <Route exact path="/">
+          <Formulario login={login} logout={logout} />
+        </Route>
+          }
         </Switch>
       </div>
     );
-  }
+  
 }
 
 export default App;
